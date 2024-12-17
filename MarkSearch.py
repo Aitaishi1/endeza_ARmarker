@@ -1,3 +1,4 @@
+# 必要モジュールのインポート
 import cv2
 from cv2 import aruco
 import numpy as np
@@ -7,20 +8,21 @@ import math
 # マーカー種類を定義
 dictionary = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
 parameters = aruco.DetectorParameters()
-markID = 1
+markID = 1 #ここで使用するマーカの種類を指定
 
 # ArucoDetectorオブジェクトを作成
 detector = aruco.ArucoDetector(dictionary, parameters)
 
 # Webカメラをキャプチャ
 cap = cv2.VideoCapture(0)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-cap.set(cv2.CAP_PROP_FPS,30)#フレームレート
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280) #カメラの横幅の設定
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720) #カメラの縦幅の設定
+cap.set(cv2.CAP_PROP_FPS,30) #フレームレート
 
 #ラズパイの時にこれは実行するようにする
 #cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc("Y","U","Y","V"))
 
+#カメラが開かれなかったときの処理
 if not cap.isOpened():
     print("Webカメラが見つかりません")
     exit()
@@ -52,18 +54,22 @@ while True:
         print('左下 : {}'.format(cornerBL))
         print('中心 : {}'.format(center))
         '''
+        #カメラからの距離を求める。distanceが距離でcenterがマーカーの中心の座標
         sidex = (cornerUL[0]-cornerUR[0])
         sidey = (cornerUL[1]-cornerUR[1])
         vertx = (cornerUL[0]-cornerBL[0])
         verty = (cornerUL[1]-cornerBL[1])
         side = math.sqrt(sidex*sidex + sidey*sidey)
         vert = math.sqrt(vertx*vertx + verty*verty)
+        
         if side > vert:
-            print("距離は",720*5.15/side)
+            distance = 720*5.15/side
+            #print("距離は",distance)
         else:
-            print("距離は",720*5.15/vert)
-        #time.sleep(0.5)
-
+            distance = 720*5.15/vert
+            #print("距離は",distance)
+        
+        #time.sleep(0.5) #処理を少なくしたいときに随時使用する
 
         #print(corners[index])### num_id のマーカーが検出された場合 ###
             #centerが中心の座標
