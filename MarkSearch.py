@@ -5,6 +5,8 @@ import numpy as np
 import time
 import math
 
+constant = 720 * 5.15
+
 # マーカー種類を定義
 dictionary = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
 parameters = aruco.DetectorParameters()
@@ -17,7 +19,7 @@ detector = aruco.ArucoDetector(dictionary, parameters)
 cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280) #カメラの横幅の設定
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720) #カメラの縦幅の設定
-cap.set(cv2.CAP_PROP_FPS,30) #フレームレート
+cap.set(cv2.CAP_PROP_FPS, 30) #フレームレート
 
 #ラズパイの時にこれは実行するようにする
 #cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc("Y","U","Y","V"))
@@ -45,7 +47,7 @@ while True:
         cornerUR = corners[index][0][1]
         cornerBR = corners[index][0][2]
         cornerBL = corners[index][0][3]
-        center = [ (cornerUL[0]+cornerBR[0])/2 , (cornerUL[1]+cornerBR[1])/2 ]
+        center = [(cornerUL[0] + cornerBR[0]) * 0.5, (cornerUL[1] + cornerBR[1]) * 0.5]
 
         '''
         print('左上 : {}'.format(cornerUL))
@@ -55,18 +57,18 @@ while True:
         print('中心 : {}'.format(center))
         '''
         #カメラからの距離を求める。distanceが距離でcenterがマーカーの中心の座標
-        sidex = (cornerUL[0]-cornerUR[0])
-        sidey = (cornerUL[1]-cornerUR[1])
-        vertx = (cornerUL[0]-cornerBL[0])
-        verty = (cornerUL[1]-cornerBL[1])
+        sidex = (cornerUL[0] - cornerUR[0])
+        sidey = (cornerUL[1] - cornerUR[1])
+        vertx = (cornerUL[0] - cornerBL[0])
+        verty = (cornerUL[1] - cornerBL[1])
         side = math.sqrt(sidex*sidex + sidey*sidey)
         vert = math.sqrt(vertx*vertx + verty*verty)
         
         if side > vert:
-            distance = 720*5.15/side
+            distance = constant / side
             #print("距離は",distance)
         else:
-            distance = 720*5.15/vert
+            distance = constant / vert
             #print("距離は",distance)
         
         #time.sleep(0.5) #処理を少なくしたいときに随時使用する
